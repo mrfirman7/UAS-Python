@@ -112,11 +112,17 @@ def cariNim():
         hasil = []
         hasil.append(resList)
         dataBasedNim = columnList + hasil
+        print('$ DATA DITEMUKAN $')
         print(tabulate(dataBasedNim, headers='firstrow', tablefmt='grid'))
     
     else:
-        empty = [['DATA TIDAK DITEMUKAN']]
-        print(tabulate(empty, headers='firstrow', tablefmt='grid'))\
+        mess = ['NA']
+        empty =[]
+        empty6 = mess*6
+        empty.append(empty6)
+        emptyFinal = columnList + empty
+        print('$$ DATA TIDAK DITEMUKAN $$')
+        print(tabulate(emptyFinal, headers='firstrow', tablefmt='grid'))
     
 def menu():
     menu = int(input('''
