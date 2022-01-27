@@ -9,7 +9,7 @@ db = connector.connect(
     user    = 'root',
     passwd  = '',
 )
-def createDB():
+def createDatabase():
     mycursor = db.cursor()
     mycursor.execute("CREATE DATABASE db_akademik_0560")
 
@@ -27,38 +27,38 @@ def getDataEndpoint(endpoint):
     return response.json()
 
 
-data = getDataEndpoint('students')
-data_data = data['data']
-dataHead = []
+dataRaw = getDataEndpoint('students')
+data_data = dataRaw['data']
+dataCol = []
 dataList = []
 for d in data_data:
     for k,v in d.items():
         dataList.append(v)
-        dataHead.append(k)
-i=0
-newLists = []
-while i<len(dataList):
-    newLists.append(dataList[i:i+6])
-    i+=6
+        dataCol.append(k)
+lmt=0
+listDataRaw = []
+while lmt<len(dataList):
+    listDataRaw.append(dataList[lmt:lmt+6])
+    lmt+=6
 
-head=dataHead[1:6]
+col=dataCol[1:6]
 
-def createTB():
-    head1 = dataHead[0]
+def createTbl():
+    head1 = dataCol[0]
     mycursor = db.cursor()
     mycursor.execute(f"CREATE TABLE tbl_students_0560 ({head1} int)")
-    for t in head:
+    for t in col:
         mycursor.execute(f"ALTER TABLE tbl_students_0560 ADD {t} varchar(255);")
     
-def adddata():
+def adddataSQL():
     mycursor = db.cursor()
-    for d in newLists:
+    for d in listDataRaw:
         q= tuple(d)
         mycursor.execute('INSERT INTO tbl_students_0560 (id, nim, nama, jk, jurusan, alamat) VALUES (%s,%s,%s,%s,%s,%s)', q ),
     db.commit() 
 
-columnList=[]
-dataLists = []
+listColumn=[]
+dataListFinal = []
 def getdata():
     mycursor = db.cursor()
     mycursor.execute("SELECT * FROM tbl_students_0560")
@@ -70,7 +70,7 @@ def getdata():
 
     i=0
     while i<len(listData):
-        dataLists.append(dataList[i:i+6])
+        dataListFinal.append(dataList[i:i+6])
         i+=6
 
 def getColumn():
@@ -83,35 +83,35 @@ def getColumn():
             column.append(k)
     for i in range(len(column)):
         column[i] = column[i].upper()
-    columnList.append(column)
+    listColumn.append(column)
 
 getdata()
 getColumn()
 
-dataFinal = columnList + dataLists
+finalData = listColumn + dataListFinal
 
 def showData():
-    print(tabulate(dataFinal, headers='firstrow', tablefmt='grid'))
+    print(tabulate(finalData, headers='firstrow', tablefmt='grid'))
 
 def basedLimit():
     limit=int(input('Massukkan limit: '))
-    dataLimit = dataFinal[0:limit+1]
+    dataLimit = finalData[0:limit+1]
     print(tabulate(dataLimit, headers='firstrow', tablefmt='grid'))
 
-def cariNim():
+def searchNim():
     nim = str(input('Masukkan NIM: '))
-    for p in dataFinal:
-        check = nim in p
+    for dl in dataListFinal:
+        check = nim in dl
         if check == True:
-            resList = p
-            res = 'ada'
+            reslt = dl
+            res = 'found'
         else:
             res = 'none'
             
-    if res == 'ada':
-        hasil = []
-        hasil.append(resList)
-        dataBasedNim = columnList + hasil
+    if res == 'found':
+        reslist = []
+        reslist.append(reslt)
+        dataBasedNim = listColumn + reslist
         print('$ DATA DITEMUKAN $')
         print(tabulate(dataBasedNim, headers='firstrow', tablefmt='grid'))
     
@@ -120,24 +120,23 @@ def cariNim():
         empty =[]
         empty6 = mess*6
         empty.append(empty6)
-        emptyFinal = columnList + empty
+        emptyFinal = listColumn + empty
         print('$$ DATA TIDAK DITEMUKAN $$')
         print(tabulate(emptyFinal, headers='firstrow', tablefmt='grid'))
     
 def menu():
-    menu = int(input('''
-    1. Tampilkan semua data
-    2. Tampilkan data berdasarkan limit
-    3. Cari data berdasarkan NIM
-    0. Keluar
-    Pilih menu> '''))
+    menu = int(input('''1. Tampilkan semua data
+2. Tampilkan data berdasarkan limit
+3. Cari data berdasarkan NIM
+0. Keluar
+Pilih menu> '''))
 
     if menu == 1:
         showData()
     elif menu == 2:
         basedLimit()
     elif menu == 3:
-        cariNim()
+        searchNim()
     elif menu == 0:
         exit()
     else:
