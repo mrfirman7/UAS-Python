@@ -1,3 +1,6 @@
+from operator import index
+import re
+from tabnanny import check
 from unittest import result
 from urllib import response
 import requests
@@ -100,32 +103,35 @@ def basedLimit():
 
 def searchNim():
     nim = str(input('Masukkan NIM: '))
-    for dl in dataListFinal:
-        check = nim in dl
-        if check == True:
-            reslt = dl
-            res = 'found'
-        else:
-            res = 'none'
-            
-    if res == 'found':
-        reslist = []
-        reslist.append(reslt)
-        dataBasedNim = listColumn + reslist
-        print('$ DATA DITEMUKAN $')
-        print(tabulate(dataBasedNim, headers='firstrow', tablefmt='grid'))
-    
+    lnim = len(nim)
+    if lnim == 10:
+        found = None
+        for i, dl in enumerate(finalData):
+            if nim in dl[1]:
+                reslist=[]
+                reslist.append(finalData[i])
+                dataBasedNim = listColumn + reslist
+                print('$ DATA DITEMUKAN $')
+                print(tabulate(dataBasedNim, headers='firstrow', tablefmt='grid'))
+                if not found:
+                    found=True
+
+        if not found:
+            mess = ['NA']
+            empty =[]
+            empty6 = mess*6
+            empty.append(empty6)
+            emptyFinal = listColumn + empty
+            print('$$ DATA TIDAK DITEMUKAN $$')
+            print(tabulate(emptyFinal, headers='firstrow', tablefmt='grid')) 
     else:
-        mess = ['NA']
-        empty =[]
-        empty6 = mess*6
-        empty.append(empty6)
-        emptyFinal = listColumn + empty
-        print('$$ DATA TIDAK DITEMUKAN $$')
-        print(tabulate(emptyFinal, headers='firstrow', tablefmt='grid'))
+        print('MASUKKAN NIM YANG BENAR')
+        searchNim()
+
+    
     
 def menu():
-    menu = int(input('''1. Tampilkan semua data
+    menu = int(input('''\n1. Tampilkan semua data
 2. Tampilkan data berdasarkan limit
 3. Cari data berdasarkan NIM
 0. Keluar
@@ -144,3 +150,4 @@ Pilih menu> '''))
 
 while True:
     menu()
+
